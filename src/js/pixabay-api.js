@@ -5,7 +5,7 @@ const BASE_URL = 'https://pixabay.com/api/';
 
 export function getImagesByQuery(query, page = 1) {
   const params = {
-    key: API_KEY,
+    key: api_key,
     q: query,
     image_type: 'photo',
     orientation: 'horizontal',

@@ -32,17 +32,17 @@
   background: #6c8cff;
 }
 
-.search-form {
+.search-input {
   width: 272px;
   height: 40px;
   border-color: #808080;
 }
 
-.search-form:hover {
+.search-input:hover {
 border-color: black;
 }
 
-.search-form:active {
+.search-input:active {
   border-color: #4e75ff;
 }
 
@@ -72,17 +72,6 @@ border-color: black;
   display: block;
 }
 
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-/* Галерея */
 .gallery {
   list-style: none;
   display: grid;

@@ -1,5 +1,5 @@
-import SimpleLightbox from 'simplelightbox';
-import 'simplelightbox/dist/simple-lightbox.min.css';
+import SimpleLightbox from "simplelightbox";
+import "simplelightbox/dist/simple-lightbox.min.css";
 
 let lightbox = null;
 
@@ -97,4 +97,16 @@ export function hideLoadMoreButton() {
   if (loadMoreBtn) {
     loadMoreBtn.classList.add('hidden');
   }
+}
+
+export function smoothScrollToNewImages() {
+  const galleryContainer = document.querySelector('.gallery');
+  if (!galleryContainer || galleryContainer.children.length === 0) return;
+  
+  const cardHeight = galleryContainer.firstElementChild.getBoundingClientRect().height;
+  
+  window.scrollBy({
+    top: cardHeight * 2,
+    behavior: 'smooth',
+  });
 }

@@ -4,20 +4,28 @@ import {
   clearGallery,
   showLoader,
   hideLoader,
+  showLoadMoreButton,
+  hideLoadMoreButton,
+  smoothScrollToNewImages,
 } from './js/render-functions.js';
 import iziToast from 'izitoast';
 import 'izitoast/dist/css/iziToast.min.css';
 
 const searchForm = document.querySelector('.search-form');
-const loadMoreBtn = document.querySelector('.load-more');
-const galleryContainer = document.querySelector('.gallery');
-
 let currentPage = 1;
 let currentQuery = '';
 const perPage = 40;
+let totalHits = 0;
 
 searchForm.addEventListener('submit', handleSearchSubmit);
-loadMoreBtn.addEventListener('click', handleLoadMore);
+
+
+document.addEventListener('DOMContentLoaded', () => {
+  const loadMoreBtn = document.querySelector('.load-more');
+  if (loadMoreBtn) {
+    loadMoreBtn.addEventListener('click', handleLoadMore);
+  }
+});
 
 function handleSearchSubmit(event) {
   event.preventDefault();
@@ -33,10 +41,12 @@ function handleSearchSubmit(event) {
     });
     return;
   }
+
+
   clearGallery();
   currentPage = 1;
   currentQuery = searchQuery;
-  loadMoreBtn.classList.add('hidden');
+  hideLoadMoreButton(); 
 
   showLoader();
 
@@ -49,19 +59,18 @@ function handleSearchSubmit(event) {
 function handleLoadMore() {
   currentPage++;
   showLoader();
-  loadMoreBtn.classList.add('hidden');
+  hideLoadMoreButton(); 
 
   getImagesByQuery(currentQuery, currentPage)
     .then(data => {
       createGallery(data.hits);
       
-      const totalHits = data.totalHits;
       const maxPage = Math.ceil(totalHits / perPage);
 
       if (currentPage < maxPage) {
-        loadMoreBtn.classList.remove('hidden');
+        showLoadMoreButton(); 
       } else {
-        loadMoreBtn.classList.add('hidden');
+        hideLoadMoreButton(); 
         iziToast.info({
           title: 'Info',
           message: "We're sorry, but you've reached the end of search results.",
@@ -69,16 +78,8 @@ function handleLoadMore() {
         });
       }
 
-      if (currentPage > 1) {
-        const cardHeight = galleryContainer
-          .firstElementChild
-          .getBoundingClientRect().height;
-        
-        window.scrollBy({
-          top: cardHeight * 2,
-          behavior: 'smooth',
-        });
-      }
+     
+      smoothScrollToNewImages();
     })
     .catch(handleError)
     .finally(() => {
@@ -88,7 +89,7 @@ function handleLoadMore() {
 
 function handleSearchResponse(data) {
   const images = data.hits;
-  const totalHits = data.totalHits;
+  totalHits = data.totalHits; 
 
   if (images.length === 0) {
     iziToast.error({
@@ -103,9 +104,8 @@ function handleSearchResponse(data) {
   createGallery(images);
 
   if (totalHits > perPage) {
-    loadMoreBtn.classList.remove('hidden');
+    showLoadMoreButton(); 
   }
-
 
   iziToast.success({
     title: 'Success',
